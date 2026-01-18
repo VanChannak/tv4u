@@ -194,3 +194,39 @@
   writing-mode: vertical-rl;
   text-orientation: mixed;
 }
+
+/* ===== MOBILE VIDEO PLAYER STYLES ===== */
+.mobile-video-player {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+}
+
+.mobile-video-player video {
+  background: #000;
+}
+
+/* Immersive mode for native apps */
+.immersive-mode {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.fullscreen-mode {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 9999 !important;
+}
+
+/* Safe area handling for mobile */
+@supports (padding: env(safe-area-inset-top)) {
+  .mobile-video-player.fullscreen {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+}
