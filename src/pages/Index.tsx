@@ -4,8 +4,6 @@ import { Hero } from "@/components/public/Hero";
 import { MobileBottomNav } from "@/components/public/MobileBottomNav";
 import { AuthProvider } from "@/hooks/useAuth";
 import { AdDisplay } from "@/components/ads/AdDisplay";
-import { useIsTablet } from "@/hooks/use-tablet";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import { RefreshCw } from "lucide-react";
 
@@ -33,17 +31,20 @@ const ComingSoonSection = lazy(() => import("@/components/public/ComingSoonSecti
 })));
 
 // Loading fallback component
-const SectionLoader = () => <section className="py-8">
-    <div className="max-w-[1600px] mx-auto px-4 md:px-6">
+const SectionLoader = () => (
+  <section className="py-8">
+    <div className="max-w-[1600px] mx-auto px-4">
       <div className="h-8 w-48 bg-secondary animate-pulse rounded-lg mb-6" />
       <div className="flex gap-4 overflow-hidden">
-        {[...Array(6)].map((_, i) => <div key={i} className="min-w-[200px] h-[320px] bg-secondary animate-pulse rounded-lg" />)}
+        {[...Array(6)].map((_, i) => (
+          <div key={i} className="min-w-[200px] h-[320px] bg-secondary animate-pulse rounded-lg" />
+        ))}
       </div>
     </div>
-  </section>;
+  </section>
+);
+
 const Index = () => {
-  const isTablet = useIsTablet();
-  const isMobile = useIsMobile();
   const [refreshKey, setRefreshKey] = useState(0);
 
   const handleRefresh = async () => {
@@ -56,29 +57,28 @@ const Index = () => {
     threshold: 80,
   });
 
-  const showPullToRefresh = isMobile || isTablet;
-  
-  return <AuthProvider>
+  return (
+    <AuthProvider>
       <div className="min-h-screen bg-background">
         <Header />
-        {showPullToRefresh && (
-          <div
-            className="fixed top-0 left-0 right-0 z-50 flex items-center justify-center transition-all duration-300 pointer-events-none"
-            style={{
-              transform: `translateY(${Math.min(pullDistance, 80)}px)`,
-              opacity: Math.min(pullDistance / 80, 1),
-            }}
-          >
-            <div className="bg-primary/90 backdrop-blur-md rounded-full p-3 shadow-lg">
-              <RefreshCw
-                className={`w-5 h-5 text-primary-foreground ${isRefreshing ? 'animate-spin' : ''}`}
-                style={{
-                  transform: `rotate(${pullDistance * 2}deg)`,
-                }}
-              />
-            </div>
+        
+        {/* Pull to Refresh Indicator */}
+        <div
+          className="fixed top-0 left-0 right-0 z-50 flex items-center justify-center transition-all duration-300 pointer-events-none"
+          style={{
+            transform: `translateY(${Math.min(pullDistance, 80)}px)`,
+            opacity: Math.min(pullDistance / 80, 1),
+          }}
+        >
+          <div className="bg-primary/90 backdrop-blur-md rounded-full p-3 shadow-lg">
+            <RefreshCw
+              className={`w-5 h-5 text-primary-foreground ${isRefreshing ? 'animate-spin' : ''}`}
+              style={{
+                transform: `rotate(${pullDistance * 2}deg)`,
+              }}
+            />
           </div>
-        )}
+        </div>
         
         {/* Hero Section */}
         <Hero key={`hero-${refreshKey}`} />
@@ -89,7 +89,7 @@ const Index = () => {
         </Suspense>
         
         {/* Homepage Banner Ad */}
-        <div className={`max-w-[1600px] mx-auto ${isTablet ? 'px-2' : 'px-4 md:px-6 py-2'}`}>
+        <div className="max-w-[1600px] mx-auto px-2 py-2">
           <AdDisplay placement="banner" device="web" />
         </div>
         
@@ -113,21 +113,14 @@ const Index = () => {
           <ComingSoonSection key={`coming-${refreshKey}`} />
         </Suspense>
 
-        {/* Desktop Footer */}
-        {!isMobile && !isTablet && (
-          <footer className="border-t border-border py-6 mt-8 bg-secondary/30">
-            <div className="max-w-[1600px] mx-auto px-4 md:px-6 text-center text-sm text-muted-foreground transition-all duration-300">
-              <p>© 2025 KHMERZOON. All rights reserved.</p>
-            </div>
-          </footer>
-        )}
-        
-        {/* Mobile/Tablet Bottom Navigation */}
-        {(isMobile || isTablet) && <MobileBottomNav />}
+        {/* Mobile Bottom Navigation */}
+        <MobileBottomNav />
         
         {/* Bottom padding for mobile nav */}
-        {(isMobile || isTablet) && <div className="h-16" />}
+        <div className="h-16" />
       </div>
-    </AuthProvider>;
+    </AuthProvider>
+  );
 };
+
 export default Index;
