@@ -1315,7 +1315,14 @@ export const ShakaPlayer = ({
     <div 
       ref={containerRef}
       className={`shaka-video-container relative bg-black group ${className}`}
-      style={{ position: 'relative', width: '100%', height: '100%' }}
+      style={{ 
+        position: 'relative', 
+        width: '100%', 
+        height: '100%',
+        maxWidth: '100vw',
+        maxHeight: '100vh',
+        overflow: 'hidden',
+      }}
       onMouseMove={handleMouseMove}
       onMouseLeave={() => isPlaying && setShowControls(false)}
     >
@@ -1370,14 +1377,17 @@ export const ShakaPlayer = ({
         />
       )}
       
-      {/* Video Wrapper with Pinch-to-Zoom */}
+      {/* Video Wrapper with Pinch-to-Zoom - Default scale is 1 (zoomed out/fit to screen) */}
       <div 
         ref={videoWrapperRef}
-        className="absolute inset-0 overflow-hidden"
+        className="absolute inset-0 flex items-center justify-center"
         style={{
-          transform: `scale(${scale}) translate(${translateX / scale}px, ${translateY / scale}px)`,
+          transform: scale > 1 ? `scale(${scale}) translate(${translateX / scale}px, ${translateY / scale}px)` : 'none',
           transformOrigin: 'center center',
           transition: isPinching ? 'none' : 'transform 0.2s ease-out',
+          overflow: 'hidden',
+          maxWidth: '100vw',
+          maxHeight: '100vh',
         }}
       >
         {/* Video Element - For MP4, HLS, DASH */}
@@ -1386,7 +1396,13 @@ export const ShakaPlayer = ({
             ref={videoRef}
             className="w-full h-full"
             poster={poster}
-            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+            style={{ 
+              width: '100%', 
+              height: '100%', 
+              objectFit: scale > 1 ? 'contain' : 'contain',
+              maxWidth: '100vw',
+              maxHeight: '100vh',
+            }}
             playsInline
             preload="metadata"
             crossOrigin="anonymous"
@@ -1416,7 +1432,14 @@ export const ShakaPlayer = ({
             className="w-full h-full"
             allowFullScreen
             allow="autoplay; encrypted-media"
-            style={{ width: '100%', height: '100%', border: 'none', objectFit: 'cover' }}
+            style={{ 
+              width: '100%', 
+              height: '100%', 
+              border: 'none', 
+              objectFit: 'contain',
+              maxWidth: '100vw',
+              maxHeight: '100vh',
+            }}
           />
           {/* Minimal overlay for iframe/embed: allow server switch + fullscreen */}
           <div className="absolute top-2 right-2 z-[9999] flex gap-2 pointer-events-auto">
